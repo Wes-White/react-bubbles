@@ -1,46 +1,53 @@
-import React, {useState} from "react";
-import axiosWithAuth from '../utils/axiosWithAuth';
-
-const Login = (props) => {
+import React, { useState } from "react";
+import axiosWithAuth from "../utils/axiosWithAuth";
+import "./Login.css";
+const Login = props => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
-  const [credentials, setCredentials] = useState({username: "", password: ""});
+  const [user, setUser] = useState({ username: "", password: "" });
 
   const handleChange = e => {
-    setCredentials({...credentials, [e.target.name]: e.target.value});
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value
+    });
   };
 
   const login = e => {
     e.preventDefault();
     axiosWithAuth()
-      .post('http://localhost:5000/api/login', credentials)
+      .post("/login", user)
       .then(res => {
-        localStorage.setItem('token', res.data.payload);
-        props.history.push('/bubble-page');
-        console.log(res)
+        console.log(res);
+        localStorage.setItem("token", res.data.payload);
+        props.history.push("/bubbles");
       })
       .catch(err => console.log(err));
   };
 
-
   return (
-    <>
+    <div className="container">
+      <h1>Welcome to Color Bubbles</h1>
       <form onSubmit={login}>
+        <h2>Sign In</h2>
+        <label>Username</label>
         <input
-        type="text"
-        name="username"
-        value={credentials.username}
-        onChange={handleChange}
+          type="text"
+          name="username"
+          placeholder="username"
+          value={user.username}
+          onChange={handleChange}
         />
+        <label>Password</label>
         <input
-        type="password"
-        name="password"
-        value={credentials.password}
-        onChange={handleChange}
+          type="password"
+          name="password"
+          value={user.password}
+          onChange={handleChange}
         />
-        <button>Log in</button>
-    </form>
-    </>
+        <button>Sign in</button>
+      </form>
+    </div>
   );
 };
 
